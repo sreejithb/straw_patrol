@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Option 1: Alias Scoring</title>
+<style>
+  :root { --bg:#fafaf7; --fg:#1d1d1b; --muted:#5d5d58; --line:#d9d8d0; --accent:#1f5f8b; --card:#ffffff; --note:#fff6df; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --fg:#ecebe6; --muted:#a3a29b; --line:#34342f; --accent:#7db7e0; --card:#1e1e1c; --note:#2a2517; }
+  }
+  body { background:var(--bg); color:var(--fg); font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; margin:0; }
+  main { max-width:46rem; margin:0 auto; padding:2.5rem 16px 4rem; }
+  h1 { font-size:1.9rem; line-height:1.25; margin:0 0 .4rem; }
+  h2 { font-size:1.25rem; margin:2.4rem 0 .6rem; padding-top:1rem; border-top:1px solid var(--line); }
+  p.lead { color:var(--muted); margin:0 0 1.5rem; }
+  ol, ul { padding-left:1.4rem; }
+  li { margin:.35rem 0; }
+  table { border-collapse:collapse; width:100%; background:var(--card); font-size:.95rem; }
+  th, td { border:1px solid var(--line); padding:.5rem .65rem; text-align:left; vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  .wrap { overflow-x:auto; }
+  .note { background:var(--note); border-left:4px solid var(--accent); padding:.7rem 1rem; margin:1rem 0; }
+  .warn { border-left-color:#c0762b; }
+  code { background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 .3em; font-size:.92em; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Option 1: Alias Scoring</h1>
+<p class="lead">A fairer way to score the model. This page says what it is, why we need it, and what I will do.</p>
+
+<h2>1. The problem</h2>
+<p>Today, the score counts an answer as correct only when the name is the same as the gold label. The comparison is exact.</p>
+<p>But many fallacies in the book are almost the same. Their definitions overlap. Some are only different names for one error.</p>
+<p>Example: the gold label is "Insignificant Cause". The model says "Causal Reductionism". Both names describe the same error. The score counts this answer as wrong.</p>
+<p>I read the 12 examples that all six runs missed. In 9 of them, the model gave a defensible answer. So the real accuracy is higher than the score shows.</p>
+
+<h2>2. What option 1 is</h2>
+<p>An <strong>alias group</strong> is a set of fallacy names that describe the same error, or nearly the same error.</p>
+<p>With option 1, an answer is correct when it names any fallacy in the same group as the gold label.</p>
+<p>The model does not change. The training data does not change. Only the scoring changes.</p>
+
+<div class="wrap">
+<table>
+  <thead><tr><th>Gold label</th><th>Model answer</th><th>Today</th><th>With alias groups</th></tr></thead>
+  <tbody>
+    <tr><td>Insignificant Cause</td><td>Causal Reductionism</td><td>Wrong</td><td>Correct</td></tr>
+    <tr><td>Inconsistency</td><td>Conflicting conditions</td><td>Wrong</td><td>Correct</td></tr>
+    <tr><td>Hasty Generalization</td><td>Jumping to conclusions</td><td>Wrong</td><td>Correct</td></tr>
+    <tr><td>Appeal to Fear</td><td>Disjunction Fallacy</td><td>Wrong</td><td>Wrong (no link)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>3. Where the groups come from</h2>
+<p>Your review step already did part of this work. For each training example, a classifier chose the best-matching fallacy from the full list. It also gave an <code>also_fits</code> list of other names that fit.</p>
+<p>These lists are saved in <code>data/generated/review_cache.jsonl</code>. They show which fallacies the classifier often confuses.</p>
+<p>I will count how often each pair of names appears together. Pairs that appear often are candidates for a group.</p>
+
+<h2>4. The plan</h2>
+<ol>
+  <li>Read the <code>also_fits</code> lists from the review cache.</li>
+  <li>Count how often each pair of fallacies appears together.</li>
+  <li>Add the pairs from my review of the 12 hard cases, such as Insignificant Cause and Causal Reductionism.</li>
+  <li>Write a draft file with the groups: <code>data/alias_groups.json</code>.</li>
+  <li>Show you the draft. You approve, remove, or change each group.</li>
+  <li>Add a new scoring mode to <code>evaluate.py</code>. It reads the group file and gives a second score.</li>
+  <li>Score the saved predictions of all six runs again. No new model run is needed.</li>
+  <li>Report the strict score and the alias score side by side.</li>
+</ol>
+
+<h2>5. What stays the same</h2>
+<ul>
+  <li>The strict score stays in the output. We can still compare with the old numbers.</li>
+  <li>The saved predictions stay as they are. The new score only reads them.</li>
+  <li>The eval set <code>eval.jsonl</code> does not change.</li>
+</ul>
+
+<h2>6. Cost and time</h2>
+<ul>
+  <li>No API calls are necessary. The data is already on your computer.</li>
+  <li>No Colab run is necessary.</li>
+  <li>The work takes a few minutes. Your review of the groups takes the most time.</li>
+</ul>
+
+<h2>7. Risks</h2>
+<div class="note warn">
+  <p><strong>Groups can be too wide.</strong> If two names that are different go in one group, the score goes up for the wrong reason. This is why you approve each group.</p>
+</div>
+<div class="note warn">
+  <p><strong>The new score is not a model improvement.</strong> The model gives the same answers. The score only shows more clearly how good they were.</p>
+</div>
+<div class="note warn">
+  <p><strong>The model sometimes makes up names.</strong> Examples: "Fallacy of spite" and "Appeal to Presentation". These names are not in the book. An alias group cannot cover a name that does not exist. I will list these names separately.</p>
+</div>
+
+<h2>8. What I need from you</h2>
+<ol>
+  <li>Say yes to the plan, or tell me what to change.</li>
+  <li>When I show the draft groups, mark each group as approved or rejected.</li>
+</ol>
+
+</main>
+</body>
+</html>

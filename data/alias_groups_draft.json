@@ -1,0 +1,801 @@
+{
+ "Abusive Ad Hominem": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Accident": {
+  "Appeal to common sense": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Affirming a Disjunct": {
+  "False dilemma": {
+   "source": "classifier",
+   "count": 5,
+   "of": 9
+  }
+ },
+ "Alternative advance": {
+  "False dilemma": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Appeal to Celebrity": {
+  "Appeal to false authority": {
+   "source": "classifier",
+   "count": 7,
+   "of": 8
+  },
+  "Blind Authority Fallacy": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  }
+ },
+ "Appeal to Definition": {
+  "Ambiguity Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Appeal to Normality": {
+  "Appeal to Common Belief": {
+   "source": "classifier",
+   "count": 8,
+   "of": 11
+  }
+ },
+ "Appeal to anger": {
+  "Appeal to emotion": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  }
+ },
+ "Appeal to coincidence": {
+  "Post hoc": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Appeal to emotion": {
+  "Loaded Language": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Appeal to equality": {
+  "False Equivalence": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Appeal to false authority": {
+  "Blind Authority Fallacy": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  }
+ },
+ "Appeal to ridicule": {
+  "Straw Man Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Appeal to self-evident truth": {
+  "Appeal to common sense": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  }
+ },
+ "Appeal to spite": {
+  "Fallacy of opposition": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Argument by Selective Reading": {
+  "Straw Man Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 5
+  }
+ },
+ "Avoiding the Issue": {
+  "Red Herring": {
+   "source": "manual review of the 12 hard cases"
+  },
+  "Selective Attention": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Biased Sample Fallacy": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "Blind Authority Fallacy": {
+  "Appeal to false authority": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  }
+ },
+ "Bulverism": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  }
+ },
+ "Canceling Hypothesis": {
+  "Self-sealing argument": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Cherry Picking": {
+  "Argument by Selective Reading": {
+   "source": "classifier",
+   "count": 5,
+   "of": 9
+  },
+  "Selective Attention": {
+   "source": "classifier",
+   "count": 6,
+   "of": 9
+  },
+  "McNamara Fallacy": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Circular Definition": {
+  "Circular Reasoning": {
+   "source": "classifier",
+   "count": 8,
+   "of": 12
+  }
+ },
+ "Circular Reasoning": {
+  "Circular Definition": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Commutation of Conditionals": {
+  "Affirming the Consequent": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  }
+ },
+ "Conflicting conditions": {
+  "Having your cake": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  },
+  "Inconsistency": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Confusing currently unexplained with unexplainable": {
+  "Argument from Ignorance": {
+   "source": "classifier",
+   "count": 7,
+   "of": 8
+  }
+ },
+ "Cum Hoc Ergo Propter Hoc": {
+  "False Effect": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  },
+  "Post hoc": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  }
+ },
+ "Deceptive Sharing": {
+  "Misleading vividness": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Denying a conjunct": {
+  "False dilemma": {
+   "source": "classifier",
+   "count": 8,
+   "of": 11
+  }
+ },
+ "Ecological Fallacy": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  }
+ },
+ "Etymological Fallacy": {
+  "Appeal to Definition": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  }
+ },
+ "Extended Analogy": {
+  "Weak analogy": {
+   "source": "classifier",
+   "count": 9,
+   "of": 11
+  },
+  "Faulty Comparison": {
+   "source": "classifier",
+   "count": 7,
+   "of": 11
+  }
+ },
+ "Fallacy of Division": {
+  "Fallacy of composition": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Fallacy of Every and All": {
+  "Quantifier Shift Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Fallacy of opposition": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 8,
+   "of": 8
+  },
+  "Guilt by Association": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  },
+  "Traitorous Critic Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "False Effect": {
+  "Post hoc": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "False Equivalence": {
+  "Faulty Comparison": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "False attribution": {
+  "Appeal to false authority": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  },
+  "Blind Authority Fallacy": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  },
+  "Anonymous Authority": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "False conversion": {
+  "Commutation of Conditionals": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "False dilemma": {
+  "Denying the correlative": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Fantasy Projection": {
+  "Appeal to emotion": {
+   "source": "classifier",
+   "count": 6,
+   "of": 9
+  }
+ },
+ "Far-fetched hypothesis": {
+  "Jumping to conclusions": {
+   "source": "classifier",
+   "count": 7,
+   "of": 8
+  }
+ },
+ "Faulty Comparison": {
+  "False Equivalence": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  }
+ },
+ "Genetic Fallacy": {
+  "Guilt by Association": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  }
+ },
+ "Guilt by Association": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "Hasty Generalization": {
+  "Jumping to conclusions": {
+   "source": "manual review of the 12 hard cases"
+  },
+  "Overextended outrage": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Hot Hand Fallacy": {
+  "Gambler's fallacy": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  }
+ },
+ "Illicit Minor": {
+  "Affirming the Consequent": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  },
+  "Commutation of Conditionals": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Illicit major": {
+  "Negative Conclusion from Affirmative Premises": {
+   "source": "classifier",
+   "count": 7,
+   "of": 11
+  }
+ },
+ "Imposter Fallacy": {
+  "Guilt by Association": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "Inconsistency": {
+  "Conflicting conditions": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Insignificant Cause": {
+  "False Effect": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  },
+  "Post hoc": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  },
+  "Causal Reductionism": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Just because fallacy": {
+  "Alleged Certainty": {
+   "source": "classifier",
+   "count": 5,
+   "of": 10
+  }
+ },
+ "Just in Case Fallacy": {
+  "Appeal to Fear": {
+   "source": "classifier",
+   "count": 10,
+   "of": 11
+  }
+ },
+ "Kettle logic": {
+  "Inconsistency": {
+   "source": "classifier + manual review",
+   "count": 5,
+   "of": 9
+  },
+  "Conflicting conditions": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Loaded Language": {
+  "Appeal to emotion": {
+   "source": "classifier",
+   "count": 8,
+   "of": 10
+  }
+ },
+ "Ludic Fallacy": {
+  "Appeal to common sense": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Lying with statistics": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 5,
+   "of": 9
+  },
+  "Cherry Picking": {
+   "source": "classifier",
+   "count": 7,
+   "of": 9
+  }
+ },
+ "Magical thinking": {
+  "Post hoc": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  }
+ },
+ "McNamara Fallacy": {
+  "Selective Attention": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "Misleading vividness": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  },
+  "Selective Attention": {
+   "source": "classifier",
+   "count": 4,
+   "of": 6
+  }
+ },
+ "Missing Data Fallacy": {
+  "Ad Hoc Rescue": {
+   "source": "classifier + manual review",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Modal Scope Fallacy": {
+  "Affirming the Consequent": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Moralistic fallacy": {
+  "Appeal to Consequences": {
+   "source": "classifier",
+   "count": 6,
+   "of": 7
+  }
+ },
+ "Moving the Goalposts": {
+  "Nirvana Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Multiple Comparisons Fallacy": {
+  "Cherry Picking": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Naturalistic Fallacy": {
+  "Appeal to Nature": {
+   "source": "classifier",
+   "count": 6,
+   "of": 11
+  }
+ },
+ "Negating antecedent and consequent": {
+  "Denying the antecedent": {
+   "source": "classifier",
+   "count": 11,
+   "of": 11
+  }
+ },
+ "Nirvana Fallacy": {
+  "Appeal to Desperation": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Nut-picking fallacy": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Overextended outrage": {
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  }
+ },
+ "Package Deal Fallacy": {
+  "False dilemma": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  },
+  "Slippery Slope": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Poisoning the Well": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 8,
+   "of": 8
+  },
+  "Abusive Ad Hominem": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Post hoc": {
+  "False Effect": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  }
+ },
+ "Post-designation": {
+  "Cum Hoc Ergo Propter Hoc": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  },
+  "Post hoc": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Proving Nonexistence": {
+  "Argument from Ignorance": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  },
+  "Shifting the Burden of Proof": {
+   "source": "classifier",
+   "count": 6,
+   "of": 6
+  }
+ },
+ "Psychogenic Fallacy": {
+  "Circumstantial Ad Hominem": {
+   "source": "classifier",
+   "count": 6,
+   "of": 9
+  },
+  "Bulverism": {
+   "source": "classifier",
+   "count": 7,
+   "of": 9
+  }
+ },
+ "Quantifier Shift Fallacy": {
+  "Fallacy of Every and All": {
+   "source": "classifier",
+   "count": 5,
+   "of": 7
+  }
+ },
+ "Quantum physics fallacy": {
+  "Appeal to complexity": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Regression Fallacy": {
+  "Post hoc": {
+   "source": "classifier",
+   "count": 7,
+   "of": 7
+  },
+  "False Effect": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Selective Attention": {
+  "Misleading vividness": {
+   "source": "manual review of the 12 hard cases"
+  }
+ },
+ "Self-sealing argument": {
+  "Ad Hoc Rescue": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Shifting the Burden of Proof": {
+  "Argument from Ignorance": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Spiritual Fallacy": {
+  "Ambiguity Fallacy": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Spotlight fallacy": {
+  "Cherry Picking": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  },
+  "Misleading vividness": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Style over substance": {
+  "Appeal to emotion": {
+   "source": "classifier",
+   "count": 4,
+   "of": 7
+  }
+ },
+ "Subverted support": {
+  "False Effect": {
+   "source": "classifier",
+   "count": 7,
+   "of": 9
+  },
+  "Post hoc": {
+   "source": "classifier",
+   "count": 6,
+   "of": 9
+  }
+ },
+ "Sunk Cost Fallacy": {
+  "Appeal to Effort": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Survivorship Fallacy": {
+  "Cherry Picking": {
+   "source": "classifier",
+   "count": 6,
+   "of": 10
+  }
+ },
+ "Texas Sharpshooter Fallacy": {
+  "Cherry Picking": {
+   "source": "classifier",
+   "count": 8,
+   "of": 10
+  },
+  "Hasty Generalization": {
+   "source": "classifier",
+   "count": 8,
+   "of": 10
+  }
+ },
+ "Two wrongs make a right": {
+  "Tu Quoque": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Unfalsifiability": {
+  "Ad Hoc Rescue": {
+   "source": "classifier",
+   "count": 6,
+   "of": 8
+  },
+  "Self-sealing argument": {
+   "source": "classifier",
+   "count": 5,
+   "of": 8
+  }
+ },
+ "Use, mention, error": {
+  "Appeal to Definition": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ },
+ "Weak analogy": {
+  "Faulty Comparison": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Willful Ignorance": {
+  "Appeal to closure": {
+   "source": "classifier",
+   "count": 4,
+   "of": 8
+  }
+ },
+ "Wishful thinking": {
+  "Appeal to Consequences": {
+   "source": "classifier",
+   "count": 5,
+   "of": 6
+  }
+ }
+}

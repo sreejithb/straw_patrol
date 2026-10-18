@@ -1,0 +1,321 @@
+{
+ "Abusive Ad Hominem": [
+  "Circumstantial Ad Hominem"
+ ],
+ "Accident": [
+  "Appeal to common sense"
+ ],
+ "Affirming a Disjunct": [
+  "False dilemma"
+ ],
+ "Alternative advance": [
+  "False dilemma"
+ ],
+ "Appeal to Celebrity": [
+  "Appeal to false authority",
+  "Blind Authority Fallacy"
+ ],
+ "Appeal to Definition": [
+  "Ambiguity Fallacy"
+ ],
+ "Appeal to Normality": [
+  "Appeal to Common Belief"
+ ],
+ "Appeal to anger": [
+  "Appeal to emotion"
+ ],
+ "Appeal to coincidence": [
+  "Post hoc"
+ ],
+ "Appeal to emotion": [
+  "Loaded Language"
+ ],
+ "Appeal to equality": [
+  "False Equivalence"
+ ],
+ "Appeal to false authority": [
+  "Blind Authority Fallacy"
+ ],
+ "Appeal to ridicule": [
+  "Straw Man Fallacy"
+ ],
+ "Appeal to self-evident truth": [
+  "Appeal to common sense"
+ ],
+ "Appeal to spite": [
+  "Fallacy of opposition"
+ ],
+ "Argument by Selective Reading": [
+  "Straw Man Fallacy"
+ ],
+ "Avoiding the Issue": [
+  "Red Herring",
+  "Selective Attention"
+ ],
+ "Biased Sample Fallacy": [
+  "Hasty Generalization"
+ ],
+ "Blind Authority Fallacy": [
+  "Appeal to false authority"
+ ],
+ "Bulverism": [
+  "Circumstantial Ad Hominem"
+ ],
+ "Canceling Hypothesis": [
+  "Self-sealing argument"
+ ],
+ "Cherry Picking": [
+  "Argument by Selective Reading",
+  "Selective Attention",
+  "McNamara Fallacy"
+ ],
+ "Circular Definition": [
+  "Circular Reasoning"
+ ],
+ "Circular Reasoning": [
+  "Circular Definition"
+ ],
+ "Commutation of Conditionals": [
+  "Affirming the Consequent"
+ ],
+ "Conflicting conditions": [
+  "Having your cake",
+  "Inconsistency"
+ ],
+ "Confusing currently unexplained with unexplainable": [
+  "Argument from Ignorance"
+ ],
+ "Cum Hoc Ergo Propter Hoc": [
+  "False Effect",
+  "Post hoc"
+ ],
+ "Deceptive Sharing": [
+  "Misleading vividness"
+ ],
+ "Denying a conjunct": [
+  "False dilemma"
+ ],
+ "Ecological Fallacy": [
+  "Hasty Generalization"
+ ],
+ "Etymological Fallacy": [
+  "Appeal to Definition"
+ ],
+ "Extended Analogy": [
+  "Weak analogy",
+  "Faulty Comparison"
+ ],
+ "Fallacy of Division": [
+  "Fallacy of composition"
+ ],
+ "Fallacy of Every and All": [
+  "Quantifier Shift Fallacy"
+ ],
+ "Fallacy of opposition": [
+  "Circumstantial Ad Hominem",
+  "Guilt by Association",
+  "Traitorous Critic Fallacy"
+ ],
+ "False Effect": [
+  "Post hoc"
+ ],
+ "False Equivalence": [
+  "Faulty Comparison"
+ ],
+ "False attribution": [
+  "Appeal to false authority",
+  "Blind Authority Fallacy",
+  "Anonymous Authority"
+ ],
+ "False conversion": [
+  "Commutation of Conditionals"
+ ],
+ "False dilemma": [
+  "Denying the correlative"
+ ],
+ "Fantasy Projection": [
+  "Appeal to emotion"
+ ],
+ "Far-fetched hypothesis": [
+  "Jumping to conclusions"
+ ],
+ "Faulty Comparison": [
+  "False Equivalence"
+ ],
+ "Genetic Fallacy": [
+  "Guilt by Association"
+ ],
+ "Guilt by Association": [
+  "Circumstantial Ad Hominem"
+ ],
+ "Hasty Generalization": [
+  "Jumping to conclusions",
+  "Overextended outrage"
+ ],
+ "Hot Hand Fallacy": [
+  "Gambler's fallacy"
+ ],
+ "Illicit Minor": [
+  "Affirming the Consequent",
+  "Commutation of Conditionals"
+ ],
+ "Illicit major": [
+  "Negative Conclusion from Affirmative Premises"
+ ],
+ "Imposter Fallacy": [
+  "Guilt by Association"
+ ],
+ "Inconsistency": [
+  "Conflicting conditions"
+ ],
+ "Insignificant Cause": [
+  "False Effect",
+  "Post hoc",
+  "Causal Reductionism"
+ ],
+ "Just because fallacy": [
+  "Alleged Certainty"
+ ],
+ "Just in Case Fallacy": [
+  "Appeal to Fear"
+ ],
+ "Kettle logic": [
+  "Inconsistency",
+  "Conflicting conditions"
+ ],
+ "Loaded Language": [
+  "Appeal to emotion"
+ ],
+ "Ludic Fallacy": [
+  "Appeal to common sense"
+ ],
+ "Lying with statistics": [
+  "Hasty Generalization",
+  "Cherry Picking"
+ ],
+ "Magical thinking": [
+  "Post hoc"
+ ],
+ "McNamara Fallacy": [
+  "Selective Attention"
+ ],
+ "Misleading vividness": [
+  "Hasty Generalization",
+  "Selective Attention"
+ ],
+ "Missing Data Fallacy": [
+  "Ad Hoc Rescue"
+ ],
+ "Modal Scope Fallacy": [
+  "Affirming the Consequent"
+ ],
+ "Moralistic fallacy": [
+  "Appeal to Consequences"
+ ],
+ "Moving the Goalposts": [
+  "Nirvana Fallacy"
+ ],
+ "Multiple Comparisons Fallacy": [
+  "Cherry Picking"
+ ],
+ "Naturalistic Fallacy": [
+  "Appeal to Nature"
+ ],
+ "Negating antecedent and consequent": [
+  "Denying the antecedent"
+ ],
+ "Nirvana Fallacy": [
+  "Appeal to Desperation"
+ ],
+ "Nut-picking fallacy": [
+  "Hasty Generalization"
+ ],
+ "Overextended outrage": [
+  "Hasty Generalization"
+ ],
+ "Package Deal Fallacy": [
+  "False dilemma",
+  "Slippery Slope"
+ ],
+ "Poisoning the Well": [
+  "Circumstantial Ad Hominem",
+  "Abusive Ad Hominem"
+ ],
+ "Post hoc": [
+  "False Effect"
+ ],
+ "Post-designation": [
+  "Cum Hoc Ergo Propter Hoc",
+  "Post hoc"
+ ],
+ "Proving Nonexistence": [
+  "Argument from Ignorance",
+  "Shifting the Burden of Proof"
+ ],
+ "Psychogenic Fallacy": [
+  "Circumstantial Ad Hominem",
+  "Bulverism"
+ ],
+ "Quantifier Shift Fallacy": [
+  "Fallacy of Every and All"
+ ],
+ "Quantum physics fallacy": [
+  "Appeal to complexity"
+ ],
+ "Regression Fallacy": [
+  "Post hoc",
+  "False Effect"
+ ],
+ "Selective Attention": [
+  "Misleading vividness"
+ ],
+ "Self-sealing argument": [
+  "Ad Hoc Rescue"
+ ],
+ "Shifting the Burden of Proof": [
+  "Argument from Ignorance"
+ ],
+ "Spiritual Fallacy": [
+  "Ambiguity Fallacy"
+ ],
+ "Spotlight fallacy": [
+  "Cherry Picking",
+  "Misleading vividness"
+ ],
+ "Style over substance": [
+  "Appeal to emotion"
+ ],
+ "Subverted support": [
+  "False Effect",
+  "Post hoc"
+ ],
+ "Sunk Cost Fallacy": [
+  "Appeal to Effort"
+ ],
+ "Survivorship Fallacy": [
+  "Cherry Picking"
+ ],
+ "Texas Sharpshooter Fallacy": [
+  "Cherry Picking",
+  "Hasty Generalization"
+ ],
+ "Two wrongs make a right": [
+  "Tu Quoque"
+ ],
+ "Unfalsifiability": [
+  "Ad Hoc Rescue",
+  "Self-sealing argument"
+ ],
+ "Use, mention, error": [
+  "Appeal to Definition"
+ ],
+ "Weak analogy": [
+  "Faulty Comparison"
+ ],
+ "Willful Ignorance": [
+  "Appeal to closure"
+ ],
+ "Wishful thinking": [
+  "Appeal to Consequences"
+ ]
+}

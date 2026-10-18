@@ -1,0 +1,14 @@
+.env
+__pycache__/
+.venv/
+transcripts/
+splits/
+*.mp3
+data/fallacies.jsonl
+data/manual_entries.jsonl
+
+out/
+*.zip
+data/generated/
+data/alias_groups.json
+colab_upload/

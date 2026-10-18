@@ -1,0 +1,11 @@
+/Users/sreejithb/Documents/logical_fallacies/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+model loaded on mps; 32 prompts in batches of 16, up to 32 new tokens each
+eval:   0%|          | 0/32 [00:00<?, ?ex/s]The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+eval:  50%|█████     | 16/32 [00:17<00:17,  1.11s/ex]eval:  50%|█████     | 16/32 [00:17<00:17,  1.11s/ex, lenient=0, strict=0, tok_s=29.0]eval: 100%|██████████| 32/32 [00:30<00:00,  1.07ex/s, lenient=0, strict=0, tok_s=29.0]eval: 100%|██████████| 32/32 [00:30<00:00,  1.07ex/s, lenient=0, strict=0, tok_s=39.2]eval: 100%|██████████| 32/32 [00:30<00:00,  1.04ex/s, lenient=0, strict=0, tok_s=39.2]
+
+Model: Qwen/Qwen2.5-1.5B-Instruct (no fine-tuning)
+Strict  (first line names the fallacy): 0/32 = 0.0%
+Lenient (label appears in answer):      0/32 = 0.0%
+Followed 'Fallacy: <name>' format:      0/32
+done
