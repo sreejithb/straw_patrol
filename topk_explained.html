@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Top-k Accuracy Explained</title>
+<style>
+  :root { --bg:#fafaf7; --fg:#1d1d1b; --muted:#5d5d58; --line:#d9d8d0; --accent:#1f5f8b; --card:#ffffff; --hit:#e3f1e6; --note:#fff6df; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161615; --fg:#ecebe6; --muted:#a3a29b; --line:#34342f; --accent:#7db7e0; --card:#1e1e1c; --hit:#1f3524; --note:#2a2517; }
+  }
+  body { background:var(--bg); color:var(--fg); font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; margin:0; }
+  main { max-width:46rem; margin:0 auto; padding:2.5rem 16px 4rem; }
+  h1 { font-size:1.9rem; line-height:1.25; margin:0 0 .4rem; }
+  h2 { font-size:1.25rem; margin:2.4rem 0 .6rem; padding-top:1rem; border-top:1px solid var(--line); }
+  p.lead { color:var(--muted); margin:0 0 1.5rem; }
+  ol, ul { padding-left:1.4rem; }
+  li { margin:.35rem 0; }
+  table { border-collapse:collapse; width:100%; background:var(--card); font-size:.95rem; }
+  th, td { border:1px solid var(--line); padding:.5rem .65rem; text-align:left; vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  td.hit { background:var(--hit); }
+  .wrap { overflow-x:auto; }
+  .note { background:var(--note); border-left:4px solid var(--accent); padding:.7rem 1rem; margin:1rem 0; }
+  .note p { margin:.3rem 0; }
+  code { background:var(--card); border:1px solid var(--line); border-radius:4px; padding:0 .3em; font-size:.92em; }
+  figcaption, .small { color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Top-k Accuracy Explained</h1>
+<p class="lead">What the top-k metric measures, how we calculate it, and how to read the graph.</p>
+
+<h2>1. The problem with the current score</h2>
+<p>The current score looks at one answer only. The model writes its first answer. We compare that name with the gold label.</p>
+<p>The score is "right" or "wrong". There is nothing in between.</p>
+<p>But the model has more information than one answer. Before it writes a name, it gives a probability to every possible name. The first answer is the name with the highest probability. The second-best name is also useful.</p>
+<p>Example: the gold label is "Appeal to Fear". The model puts "Just in Case Fallacy" first and "Appeal to Fear" second. The current score says "wrong". But the model almost had it.</p>
+
+<h2>2. What top-k is</h2>
+<p>The model ranks all known fallacy names from most likely to least likely.</p>
+<p>An example is <strong>top-k correct</strong> when the gold label is in the first k names of this ranking.</p>
+<p><strong>Top-k accuracy</strong> is the share of eval examples that are top-k correct.</p>
+
+<div class="wrap">
+<table>
+  <thead><tr><th>Rank</th><th>Name</th><th>Top-1</th><th>Top-2</th><th>Top-3</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Just in Case Fallacy</td><td>no</td><td>no</td><td>no</td></tr>
+    <tr><td>2</td><td><strong>Appeal to Fear</strong> (gold)</td><td>no</td><td class="hit">yes</td><td class="hit">yes</td></tr>
+    <tr><td>3</td><td>Appeal to Consequences</td><td>no</td><td>no</td><td>no</td></tr>
+  </tbody>
+</table>
+<p class="small">This is an example to show the idea. The ranks are not real data.</p>
+</div>
+
+<p>In this example, the gold label is at rank 2. So the example is wrong at k=1. It is correct at k=2 and at every larger k.</p>
+
+<h2>3. Two rules that always hold</h2>
+<ul>
+  <li>Top-1 accuracy is almost the same as our strict score. It uses only the best name. A small difference is normal (see section 7).</li>
+  <li>Top-k accuracy never goes down when k becomes larger. A larger k gives the gold label more chances.</li>
+</ul>
+<p>At k = 185 (all names), the accuracy is 100%. Every gold label is somewhere in the list.</p>
+
+<h2>4. How we calculate the ranking</h2>
+<ol>
+  <li>Collect the 185 fallacy names from the training and eval files. Each name is one candidate.</li>
+  <li>For each eval example, build the prompt in the same way as in training.</li>
+  <li>For each candidate, calculate the probability that the model writes exactly <code>Fallacy: &lt;name&gt;</code> followed by a new line. The model gives a probability for each token. We add the log-probabilities of all tokens in the string.</li>
+  <li>Sort the 185 candidates by this probability. The highest is rank 1.</li>
+  <li>Find the rank of the gold label. Save it.</li>
+  <li>After all 135 examples, count how many have a rank of k or better. Divide by 135.</li>
+</ol>
+<p>The script is <code>topk.py</code>. It runs one model at a time and saves the ranks in <code>data/topk_&lt;run&gt;.json</code>.</p>
+
+<h2>5. How the graph works</h2>
+<ul>
+  <li>The x-axis is k.</li>
+  <li>The y-axis is the top-k accuracy.</li>
+  <li>Each line is one run: the untrained baseline, the first run, and runs A to F.</li>
+</ul>
+<p>The graph shows two things.</p>
+<ol>
+  <li><strong>The left end</strong> (k=1) is the strict score. It agrees with the numbers we already have.</li>
+  <li><strong>The slope</strong> shows how often the correct name is a near-miss. A line that rises fast between k=1 and k=3 means the model usually has the right name close to the top. A line that rises slowly means the model does not know the right name.</li>
+</ol>
+
+<h2>6. Top-k and alias groups</h2>
+<p>Both methods try to give credit for near-misses. They work in different ways.</p>
+<div class="wrap">
+<table>
+  <thead><tr><th></th><th>Alias groups</th><th>Top-k</th></tr></thead>
+  <tbody>
+    <tr><td>Who decides what is close?</td><td>A person (or a classifier) decides.</td><td>The model decides, with its own ranking.</td></tr>
+    <tr><td>What it gives credit for</td><td>Names that mean nearly the same thing.</td><td>Any name that the model ranks high.</td></tr>
+    <tr><td>Main risk</td><td>Groups can be too wide.</td><td>A larger k is easier. It can hide a weak model.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>7. Limits</h2>
+<div class="note">
+  <p><strong>Top-k is not what a user sees.</strong> A user gets one answer. The top-k score is useful to compare models and to find near-misses. It is not the same as the accuracy of the real product.</p>
+</div>
+<div class="note">
+  <p><strong>Short names have an advantage.</strong> We add log-probabilities, so a long name has more tokens that can lower its score. This is also how the model writes text.</p>
+</div>
+<div class="note">
+  <p><strong>Top-1 can differ from the strict score by an example or two.</strong> The strict score uses greedy decoding. The model picks the best token, one step at a time. Top-1 picks the name with the best probability for the whole name. These can be different names. In our test on run B, the strict score was 100 of 135 (74.1%) and top-1 was 101 of 135 (74.8%).</p>
+</div>
+<div class="note">
+  <p><strong>The baseline is not directly comparable.</strong> The untrained model does not know the answer format. We add a format hint to the prompt for this model only, as in the earlier baseline test.</p>
+</div>
+<div class="note">
+  <p><strong>The eval set is small.</strong> With 135 examples, differences of 3 to 4 points between runs are inside the noise.</p>
+</div>
+
+</main>
+</body>
+</html>

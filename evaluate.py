@@ -43,11 +43,20 @@ def main() -> None:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--hint", action="store_true", help="add the output-format hint to the system prompt (baseline only)")
     ap.add_argument("--out", default="baseline_preds.jsonl")
+    ap.add_argument("--base", default=BASE, help="base model; must be the one the adapter was trained on")
+    ap.add_argument("--four-bit", action="store_true", help="load the base model in 4-bit (use for 7B on a 16 GB GPU)")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
-    tok = AutoTokenizer.from_pretrained(BASE)
-    model = AutoModelForCausalLM.from_pretrained(BASE, dtype=torch.float16 if device != "cpu" else torch.float32).to(device)
+    tok = AutoTokenizer.from_pretrained(args.base)
+    dtype = torch.float16 if device != "cpu" else torch.float32
+    if args.four_bit:
+        from transformers import BitsAndBytesConfig
+        quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
+                                   bnb_4bit_compute_dtype=torch.float16)
+        model = AutoModelForCausalLM.from_pretrained(args.base, quantization_config=quant, dtype=dtype, device_map={"": 0})
+    else:
+        model = AutoModelForCausalLM.from_pretrained(args.base, dtype=dtype).to(device)
     if args.adapter:
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.adapter)
@@ -80,7 +89,7 @@ def main() -> None:
     bar.close()
 
     n = len(results)
-    print(f"\nModel: {BASE}{' + ' + args.adapter if args.adapter else ' (no fine-tuning)'}")
+    print(f"\nModel: {args.base}{' + ' + args.adapter if args.adapter else ' (no fine-tuning)'}")
     print(f"Strict  (first line names the fallacy): {sum(r['strict'] for r in results)}/{n} = {100 * sum(r['strict'] for r in results) / n:.1f}%")
     print(f"Lenient (label appears in answer):      {sum(r['lenient'] for r in results)}/{n} = {100 * sum(r['lenient'] for r in results) / n:.1f}%")
     fmt = sum(1 for r in results if r["answer"].strip().lower().startswith("fallacy:"))

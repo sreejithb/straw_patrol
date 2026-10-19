@@ -78,6 +78,8 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--rank", type=int, default=16)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--base", default=BASE, help="base model; the adapter only works with the base it was trained on")
+    ap.add_argument("--four-bit", action="store_true", help="load the base model in 4-bit (QLoRA); needed for 7B on a 16 GB GPU")
     args = ap.parse_args()
 
     random.seed(args.seed)
@@ -87,8 +89,14 @@ def main() -> None:
     dtype = torch.float16 if device != "cpu" else torch.float32
     print(f"device={device} dtype={dtype}")
 
-    tok = AutoTokenizer.from_pretrained(BASE)
-    model = AutoModelForCausalLM.from_pretrained(BASE, dtype=dtype).to(device)
+    tok = AutoTokenizer.from_pretrained(args.base)
+    if args.four_bit:
+        from transformers import BitsAndBytesConfig
+        quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
+                                   bnb_4bit_compute_dtype=torch.float16)
+        model = AutoModelForCausalLM.from_pretrained(args.base, quantization_config=quant, dtype=dtype, device_map={"": 0})
+    else:
+        model = AutoModelForCausalLM.from_pretrained(args.base, dtype=dtype).to(device)
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
     model = get_peft_model(model, LoraConfig(
