@@ -32,6 +32,13 @@ Rules:
 - Reply with exactly one name from the list (or None) on a single line, and nothing else."""
 
 
+T0 = time.time()
+
+
+def log(msg):
+    print(f"[{time.time() - T0:6.0f}s] {msg}", flush=True)
+
+
 def mem(label):
     if torch.cuda.is_available():
         print(f"[gpu] {label}: {torch.cuda.memory_allocated() / 2**30:.1f} GiB in use, peak {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB "
@@ -86,7 +93,12 @@ def main() -> None:
     ap.add_argument("--short-menu", action="store_true", help="names only, no definitions (about 3k tokens)")
     args = ap.parse_args()
 
+    import torch as _t
+    gpu = _t.cuda.get_device_name(0) + f" ({_t.cuda.get_device_properties(0).total_memory / 2**30:.0f} GiB)" if _t.cuda.is_available() else "no GPU"
+    log(f"model {args.model} | GPU: {gpu} | 4-bit: {args.four_bit} | menu: {'names only' if args.short_menu else 'names + definitions'}")
+    log("loading the model: the first time this downloads about 15 GB and can take several minutes (progress bars below)")
     tok, model, dtype, device = chat_utils.load_model(args.model, args.four_bit)
+    log(f"model loaded, dtype {dtype}")
     model.eval()
     mem('after loading the model')
 
@@ -100,12 +112,13 @@ def main() -> None:
     # shared prefix = longest common token prefix of two prompts with different user texts (minus a safety margin)
     a, b = enc(build("alpha beta gamma")), enc(build("delta epsilon zeta"))
     P = next((i for i, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b))) - 2
+    log(f"the menu prompt is {P} tokens; reading it once into the cache ...")
     prefix = torch.tensor([a[:P]], device=device)
     cache = None
     if not args.no_prefix_cache:
         try:
             cache = prefill(model, prefix)
-            print(f"prefix of {P} tokens cached", flush=True)
+            log(f"menu cached (every text now only needs its own ~100 tokens)")
             mem("after caching the menu")
         except Exception as e:
             print("prefix cache unavailable, running without it:", type(e).__name__, str(e)[:100])
@@ -114,8 +127,10 @@ def main() -> None:
     for name in args.sets:
         items = read_set(ROOT / SETS[name])[:args.limit]
         t0 = time.time()
-        print(f'using the shared menu cache: {cache is not None}', flush=True)
-        for it in tqdm(items, desc=f"{safe}/{name}", dynamic_ncols=True):
+        log(f"starting {name}: {len(items)} texts, shared menu cache: {cache is not None}")
+        seen = hit = 0
+        bar = tqdm(items, desc=f"{safe}/{name}", dynamic_ncols=True)
+        for k, it in enumerate(bar, 1):
             ids = enc(build(it["text"]))
             x = torch.tensor([ids], device=device)
             with torch.no_grad():
@@ -125,7 +140,7 @@ def main() -> None:
                         cache.crop(P)
                     except Exception:  # cache type without crop (e.g. sliding-window): fall back to full prompts
                         cache = None
-                        print("cache.crop not supported: switching to per-text chunked prefill", flush=True)
+                        log("cache.crop not supported: switching to per-text chunked prefill")
                 else:
                     # no shared cache: read the whole prompt in chunks (a single 6k-token pass can need more memory than a T4 has)
                     own = prefill(model, x[:, :-1])
@@ -134,8 +149,14 @@ def main() -> None:
                     torch.cuda.empty_cache() if torch.cuda.is_available() else None
             it["output"] = tok.decode(out[0, x.shape[1]:], skip_special_tokens=True)
             it["pred"] = parse(it["output"], names_norm)
-        if not args.limit:
-            (ROOT / "data" / f"zeroshot_{safe}_{name}.json").write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
+            seen += 1
+            hit += it["pred"] is not None and norm(it["pred"]) in {norm(g) for g in it["gold"]}
+            bar.set_postfix(top1=f"{100 * hit / seen:.0f}%")
+            if k <= 3:
+                log(f"example {k}: gold {it['gold'][:2]} -> model said {it['output'].strip()[:60]!r}")
+            if k % 25 == 0 or k == len(items):
+                el = time.time() - t0
+                log(f"{name}: {k}/{len(items)} done, running top-1 {100 * hit / seen:.0f}%, {el / k:.1f} s/text, about {el / k * (len(items) - k) / 60:.1f} min left")
         mem(f"after {name}")
         s = stats(items)
         print(f"{name:26} n={s['n']:4} top-1 {s['top1']:5.1f}%  None recall {s['none_recall']:5.1f}%  fallacy top-1 {s['fallacy_top1']:5.1f}%  "

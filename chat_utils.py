@@ -60,5 +60,8 @@ def load_model(base, four_bit=False, device=None):
         q = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True, bnb_4bit_compute_dtype=dtype)
         model = AutoModelForCausalLM.from_pretrained(base, quantization_config=q, dtype=dtype, device_map={"": 0}, **kw)
     else:
-        model = AutoModelForCausalLM.from_pretrained(base, dtype=dtype, **kw).to(device)
+        if device == "cuda":  # load straight onto the GPU (no copy through CPU memory)
+            model = AutoModelForCausalLM.from_pretrained(base, dtype=dtype, device_map={"": 0}, **kw)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(base, dtype=dtype, **kw).to(device)
     return tok, model, dtype, device
