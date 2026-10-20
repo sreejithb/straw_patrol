@@ -16,6 +16,12 @@ FILES = {  # local path -> path inside the dataset repo
     "data/generated/train.jsonl": "train.jsonl",
     "data/generated/train_extra.jsonl": "train_extra.jsonl",
     "data/generated/eval.jsonl": "eval.jsonl",
+    "data/generated/train_none.jsonl": "train_none.jsonl",
+    "data/generated/eval_none.jsonl": "eval_none.jsonl",
+    "data/generated/calib_fallacy.jsonl": "calib_fallacy.jsonl",
+    "data/generated/calib_none.jsonl": "calib_none.jsonl",
+    "data/generated/train_real.jsonl": "train_real.jsonl",
+    "data/generated/eval_real.jsonl": "eval_real.jsonl",
     "data/alias_groups.json": "alias_groups.json",
 }
 CARD = """---
@@ -30,6 +36,9 @@ Synthetic arguments labelled with the logical fallacy they commit, in chat forma
 - `train.jsonl`: 1,222 examples (first build, reviewed)
 - `train_extra.jsonl`: 977 examples added later to bring every fallacy to about 12 examples
 - `eval.jsonl`: 135 held-out examples, never used for training or early stopping
+- `train_none.jsonl` / `eval_none.jsonl`: the "no fallacy" class (answer `Fallacy: None`): sound arguments, legitimate look-alikes, non-arguments and civil threads
+- `calib_fallacy.jsonl` / `calib_none.jsonl`: held-out calibration set (never used for training or evaluation), for fitting confidence calibration
+- `train_real.jsonl` / `eval_real.jsonl`: realistic-style examples for every fallacy plus new "None" kinds (mention-not-use, heated but fair, fair look-alikes, civil threads)
 - `alias_groups.json`: gold label -> other fallacy names that also count as correct when scoring
 
 Generated with an LLM from fallacy names and definitions, then filtered by automatic checks and an LLM judge.

@@ -12,3 +12,16 @@ out/
 data/generated/
 data/alias_groups.json
 colab_upload/
+external/
+colab_upload_score/
+colab_upload_real/
+data/label_menu.json
+data/generated/distill_*
+colab_upload_open/
+.DS_Store
+# files that contain text from external datasets (CoCoLoFa, MAFALDA): local only
+data/scores_*_cocolofa*.json
+data/scores_*_mafalda*.json
+data/llm_*.json
+data/review40.json
+data/zeroshot_*.json

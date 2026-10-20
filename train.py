@@ -15,20 +15,20 @@ import random
 from pathlib import Path
 
 import torch
+import chat_utils
 from peft import LoraConfig, get_peft_model
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer, get_cosine_schedule_with_warmup
 
 ROOT = Path(__file__).parent
-TRAIN_FILES = [ROOT / "data" / "generated" / "train.jsonl", ROOT / "data" / "generated" / "train_extra.jsonl"]
+TRAIN_FILES = [ROOT / "data" / "generated" / f for f in ("train.jsonl", "train_extra.jsonl", "train_none.jsonl", "train_real.jsonl", "distill_real.jsonl")]
 BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 MAX_LEN = 512
 
 
 def encode(tok, messages):
     """Tokenise one chat; labels are -100 everywhere except the assistant reply."""
-    prompt = tok.apply_chat_template(messages[:-1], add_generation_prompt=True, tokenize=False)
-    reply = messages[-1]["content"] + "<|im_end|>\n"
+    prompt, reply = chat_utils.train_pair(tok, messages)
     p = tok(prompt, add_special_tokens=False)["input_ids"]
     r = tok(reply, add_special_tokens=False)["input_ids"]
     ids = (p + r)[:MAX_LEN]
@@ -84,19 +84,8 @@ def main() -> None:
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
-    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
-    # T4 has no bf16; keep the trainable LoRA weights in fp32 and run the frozen base in fp16.
-    dtype = torch.float16 if device != "cpu" else torch.float32
-    print(f"device={device} dtype={dtype}")
-
-    tok = AutoTokenizer.from_pretrained(args.base)
-    if args.four_bit:
-        from transformers import BitsAndBytesConfig
-        quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
-                                   bnb_4bit_compute_dtype=torch.float16)
-        model = AutoModelForCausalLM.from_pretrained(args.base, quantization_config=quant, dtype=dtype, device_map={"": 0})
-    else:
-        model = AutoModelForCausalLM.from_pretrained(args.base, dtype=dtype).to(device)
+    tok, model, dtype, device = chat_utils.load_model(args.base, args.four_bit)
+    print(f"device={device} dtype={dtype} base={args.base}")
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
     model = get_peft_model(model, LoraConfig(
@@ -127,7 +116,7 @@ def main() -> None:
     steps_per_epoch = (len(data) + args.batch - 1) // args.batch
     opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=args.lr, weight_decay=0.0)
     sched = get_cosine_schedule_with_warmup(opt, int(0.05 * steps_per_epoch * args.epochs), steps_per_epoch * args.epochs)
-    scaler = torch.amp.GradScaler(enabled=device == "cuda")
+    scaler = torch.amp.GradScaler(enabled=device == "cuda" and dtype == torch.float16)
 
     model.train()
     best, best_epoch, bad = float("inf"), 0, 0

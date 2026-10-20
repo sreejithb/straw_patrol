@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 
 import torch
+import chat_utils
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -43,26 +44,18 @@ def main() -> None:
     ap.add_argument("--limit", type=int)
     ap.add_argument("--hint", action="store_true", help="add the output-format hint to the system prompt (baseline only)")
     ap.add_argument("--out", default="baseline_preds.jsonl")
+    ap.add_argument("--eval-file", default=str(EVAL), help="eval set; use data/generated/eval_none.jsonl for the no-fallacy set")
     ap.add_argument("--base", default=BASE, help="base model; must be the one the adapter was trained on")
     ap.add_argument("--four-bit", action="store_true", help="load the base model in 4-bit (use for 7B on a 16 GB GPU)")
     args = ap.parse_args()
 
-    device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
-    tok = AutoTokenizer.from_pretrained(args.base)
-    dtype = torch.float16 if device != "cpu" else torch.float32
-    if args.four_bit:
-        from transformers import BitsAndBytesConfig
-        quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True,
-                                   bnb_4bit_compute_dtype=torch.float16)
-        model = AutoModelForCausalLM.from_pretrained(args.base, quantization_config=quant, dtype=dtype, device_map={"": 0})
-    else:
-        model = AutoModelForCausalLM.from_pretrained(args.base, dtype=dtype).to(device)
+    tok, model, dtype, device = chat_utils.load_model(args.base, args.four_bit)
     if args.adapter:
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.adapter)
     model.eval()
 
-    rows = [json.loads(l) for l in EVAL.read_text(encoding="utf-8").splitlines() if l.strip()]
+    rows = [json.loads(l) for l in Path(args.eval_file).read_text(encoding="utf-8").splitlines() if l.strip()]
     if args.limit:
         rows = rows[:args.limit]
 
@@ -74,7 +67,7 @@ def main() -> None:
         label = gold.split("\n")[0].replace("Fallacy: ", "").strip()
         msgs = [{"role": "system", "content": system + (FORMAT_HINT if args.hint else "")},
                 {"role": "user", "content": user}]
-        ids = tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt", return_dict=True).to(device)
+        ids = chat_utils.prompt_ids(tok, msgs, device)
         t_gen = time.time()
         with torch.no_grad():
             out = model.generate(**ids, max_new_tokens=MAX_NEW, do_sample=False)
@@ -92,6 +85,11 @@ def main() -> None:
     print(f"\nModel: {args.base}{' + ' + args.adapter if args.adapter else ' (no fine-tuning)'}")
     print(f"Strict  (first line names the fallacy): {sum(r['strict'] for r in results)}/{n} = {100 * sum(r['strict'] for r in results) / n:.1f}%")
     print(f"Lenient (label appears in answer):      {sum(r['lenient'] for r in results)}/{n} = {100 * sum(r['lenient'] for r in results) / n:.1f}%")
+    said_none = sum(norm(first_line_name(r["answer"])) == "none" for r in results)
+    if all(norm(r["label"]) == "none" for r in results):
+        print(f"No-fallacy set: said 'None' on {said_none}/{n} = {100 * said_none / n:.1f}%  (false alarms: {n - said_none}/{n} = {100 * (n - said_none) / n:.1f}%)")
+    else:
+        print(f"Said 'None' on a real fallacy:          {said_none}/{n}")
     fmt = sum(1 for r in results if r["answer"].strip().lower().startswith("fallacy:"))
     print(f"Followed 'Fallacy: <name>' format:      {fmt}/{n}")
     (ROOT / "data" / args.out).write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in results), encoding="utf-8")

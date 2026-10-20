@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 
 import torch
+import chat_utils
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -50,7 +51,7 @@ def main() -> None:
     if args.limit:
         rows = rows[:args.limit]
     names = {}
-    for f in (GEN / "train.jsonl", GEN / "train_extra.jsonl", EVAL):
+    for f in (GEN / "train.jsonl", GEN / "train_extra.jsonl", GEN / "train_none.jsonl", EVAL):
         if f.exists():
             for l in f.read_text(encoding="utf-8").splitlines():
                 if l.strip():
@@ -67,7 +68,7 @@ def main() -> None:
     for row in tqdm(rows, unit="ex", desc=f"topk {args.run}", dynamic_ncols=True):
         system, user, _ = (m["content"] for m in row["messages"])
         msgs = [{"role": "system", "content": system + (FORMAT_HINT if args.hint else "")}, {"role": "user", "content": user}]
-        p = tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt", return_dict=True).to(device)
+        p = chat_utils.prompt_ids(tok, msgs, device)
         score = torch.empty(len(cands), device=device)
         with torch.no_grad():
             for c0 in range(0, len(cands), CHUNK):  # chunked so the vocab-sized logits fit in memory
