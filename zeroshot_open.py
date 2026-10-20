@@ -32,6 +32,32 @@ Rules:
 - Reply with exactly one name from the list (or None) on a single line, and nothing else."""
 
 
+def mem(label):
+    if torch.cuda.is_available():
+        print(f"[gpu] {label}: {torch.cuda.memory_allocated() / 2**30:.1f} GiB in use, peak {torch.cuda.max_memory_allocated() / 2**30:.1f} GiB "
+              f"of {torch.cuda.get_device_properties(0).total_memory / 2**30:.1f} GiB", flush=True)
+
+
+def forward_keep_last(model, **kw):
+    """Forward pass that only computes logits for the last position (the full 6k x 152k logits table is ~2-4 GB)."""
+    for name in ("logits_to_keep", "num_logits_to_keep"):
+        try:
+            return model(**kw, **{name: 1})
+        except TypeError:
+            continue
+    return model(**kw)
+
+
+def prefill(model, ids, chunk=512):
+    """Run the shared menu through the model in chunks and return its key/value cache."""
+    from transformers import DynamicCache
+    cache = DynamicCache()
+    with torch.no_grad():
+        for s in range(0, ids.shape[1], chunk):
+            forward_keep_last(model, input_ids=ids[:, s:s + chunk], past_key_values=cache, use_cache=True)
+    return cache
+
+
 def parse(output, names_norm):
     first = re.sub(r"^\W*(answer|fallacy)\s*:\s*", "", output.strip().split("\n")[0], flags=re.I)
     n = norm(first)
@@ -62,6 +88,7 @@ def main() -> None:
 
     tok, model, dtype, device = chat_utils.load_model(args.model, args.four_bit)
     model.eval()
+    mem('after loading the model')
 
     lm = json.loads((ROOT / "data" / "label_menu.json").read_text(encoding="utf-8"))
     menu = "\n".join(l.split(":")[0] for l in lm["menu"].split("\n")) if args.short_menu else lm["menu"]
@@ -77,9 +104,9 @@ def main() -> None:
     cache = None
     if not args.no_prefix_cache:
         try:
-            with torch.no_grad():
-                cache = model(prefix, use_cache=True).past_key_values
+            cache = prefill(model, prefix)
             print(f"prefix of {P} tokens cached", flush=True)
+            mem("after caching the menu")
         except Exception as e:
             print("prefix cache unavailable, running without it:", type(e).__name__, str(e)[:100])
 
@@ -87,6 +114,7 @@ def main() -> None:
     for name in args.sets:
         items = read_set(ROOT / SETS[name])[:args.limit]
         t0 = time.time()
+        print(f'using the shared menu cache: {cache is not None}', flush=True)
         for it in tqdm(items, desc=f"{safe}/{name}", dynamic_ncols=True):
             ids = enc(build(it["text"]))
             x = torch.tensor([ids], device=device)
@@ -97,12 +125,18 @@ def main() -> None:
                         cache.crop(P)
                     except Exception:  # cache type without crop (e.g. sliding-window): fall back to full prompts
                         cache = None
+                        print("cache.crop not supported: switching to per-text chunked prefill", flush=True)
                 else:
-                    out = model.generate(input_ids=x, attention_mask=torch.ones_like(x), max_new_tokens=16, do_sample=False)
+                    # no shared cache: read the whole prompt in chunks (a single 6k-token pass can need more memory than a T4 has)
+                    own = prefill(model, x[:, :-1])
+                    out = model.generate(input_ids=x, attention_mask=torch.ones_like(x), past_key_values=own, max_new_tokens=16, do_sample=False)
+                    del own
+                    torch.cuda.empty_cache() if torch.cuda.is_available() else None
             it["output"] = tok.decode(out[0, x.shape[1]:], skip_special_tokens=True)
             it["pred"] = parse(it["output"], names_norm)
         if not args.limit:
             (ROOT / "data" / f"zeroshot_{safe}_{name}.json").write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
+        mem(f"after {name}")
         s = stats(items)
         print(f"{name:26} n={s['n']:4} top-1 {s['top1']:5.1f}%  None recall {s['none_recall']:5.1f}%  fallacy top-1 {s['fallacy_top1']:5.1f}%  "
               f"unparsed {s['unparsed']}  ({time.time() - t0:.0f}s)", flush=True)

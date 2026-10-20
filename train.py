@@ -78,6 +78,7 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--rank", type=int, default=16)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--max-steps", type=int, help="stop after this many optimizer steps (timing probe: see s/step before a long run)")
     ap.add_argument("--base", default=BASE, help="base model; the adapter only works with the base it was trained on")
     ap.add_argument("--four-bit", action="store_true", help="load the base model in 4-bit (QLoRA); needed for 7B on a 16 GB GPU")
     args = ap.parse_args()
@@ -120,6 +121,7 @@ def main() -> None:
 
     model.train()
     best, best_epoch, bad = float("inf"), 0, 0
+    done = 0
     bar = tqdm(total=steps_per_epoch * args.epochs, unit="step", desc="train", dynamic_ncols=True)
     for epoch in range(args.epochs):
         random.shuffle(data)
@@ -135,7 +137,14 @@ def main() -> None:
             opt.zero_grad(set_to_none=True)
             sched.step()
             bar.update(1)
+            done += 1
+            if args.max_steps and done >= args.max_steps:
+                break
             bar.set_postfix(epoch=epoch + 1, loss=f"{loss.item():.3f}")
+        if args.max_steps and done >= args.max_steps:
+            model.save_pretrained(args.out)
+            print(f"stopped after {done} steps (--max-steps); see the s/step in the progress bar")
+            break
         if not val:
             model.save_pretrained(args.out)  # checkpoint after every epoch, so a dropped session loses little
             continue
