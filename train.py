@@ -77,6 +77,7 @@ def main() -> None:
     ap.add_argument("--lr", type=float, default=2e-4)
     ap.add_argument("--batch", type=int, default=8)
     ap.add_argument("--rank", type=int, default=16)
+    ap.add_argument("--train-files", nargs="*", help="chat-format jsonl file(s) to train on instead of the default data/generated/* files")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-steps", type=int, help="stop after this many optimizer steps (timing probe: see s/step before a long run)")
     ap.add_argument("--base", default=BASE, help="base model; the adapter only works with the base it was trained on")
@@ -97,7 +98,8 @@ def main() -> None:
             p.data = p.data.float()
     model.print_trainable_parameters()
 
-    rows = [json.loads(l)["messages"] for f in TRAIN_FILES if f.exists()
+    files = [Path(f) if Path(f).is_absolute() else ROOT / f for f in args.train_files] if args.train_files else TRAIN_FILES
+    rows = [json.loads(l)["messages"] for f in files if f.exists()
             for l in f.read_text(encoding="utf-8").splitlines() if l.strip()]
     print(f"{len(rows)} training examples")
     val_rows = []

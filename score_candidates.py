@@ -46,6 +46,13 @@ def read_set(path):
 
 def candidate_names():
     names = {}
+    v6 = ROOT / "data" / "v6" / "train_v6.jsonl"
+    if v6.exists():  # v6 run: the label set is whatever the v6 training file contains
+        for line in v6.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                n = label_of(json.loads(line))
+                names.setdefault(norm(n), n)
+        return sorted(names.values())
     for f in ("train.jsonl", "train_extra.jsonl", "train_none.jsonl", "train_real.jsonl", "eval.jsonl"):
         if not (GEN / f).exists():
             continue
@@ -63,6 +70,7 @@ def main() -> None:
     ap.add_argument("--set", action="append", required=True, help="NAME=PATH, repeatable")
     ap.add_argument("--base", default=BASE)
     ap.add_argument("--four-bit", action="store_true", help="load the base model in 4-bit (7B+ models on a 16 GB GPU)")
+    ap.add_argument("--chunk", type=int, default=0, help="candidates scored per forward pass; 0 = all at once on a CUDA GPU, 62 otherwise")
     ap.add_argument("--limit", type=int)
     args = ap.parse_args()
 
@@ -73,6 +81,7 @@ def main() -> None:
     model.eval()
 
     cands = candidate_names()
+    chunk = args.chunk or (len(cands) if device == "cuda" else CHUNK)  # one pass over all names is fastest; chunks keep the vocab-sized logits small
     cand_ids = [tok(f"Fallacy: {n}\n", add_special_tokens=False)["input_ids"] for n in cands]
     L = max(map(len, cand_ids))
     ids = torch.tensor([c + [tok.pad_token_id] * (L - len(c)) for c in cand_ids], device=device)
@@ -92,8 +101,8 @@ def main() -> None:
             p = chat_utils.prompt_ids(tok, msgs, device)
             score = torch.empty(len(cands), device=device)
             with torch.no_grad():
-                for c0 in range(0, len(cands), CHUNK):
-                    c1 = min(c0 + CHUNK, len(cands))
+                for c0 in range(0, len(cands), chunk):
+                    c1 = min(c0 + chunk, len(cands))
                     out = model(**p, use_cache=True)
                     first = torch.log_softmax(out.logits[0, -1].float(), -1)
                     cache = out.past_key_values

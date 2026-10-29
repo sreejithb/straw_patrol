@@ -25,3 +25,12 @@ data/scores_*_mafalda*.json
 data/llm_*.json
 data/review40.json
 data/zeroshot_*.json
+# data/v6 contents are rebuilt by make_splits.py; the public-data files must never be committed
+data/v6/*/*.jsonl
+data/v6/cocolofa_explanations.jsonl
+data/v6/train_v6.jsonl
+colab_upload_v6/
+colab_upload_spans/
+external/
+data/scores_*span*.json
+data/v6/build_train_v6.log

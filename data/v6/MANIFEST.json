@@ -1,0 +1,109 @@
+{
+ "seed": 0,
+ "cocolofa_cap_per_type": 150,
+ "cocolofa_cap_none": 300,
+ "splits": {
+  "train": {
+   "cocolofa": {
+    "total": 1497,
+    "fallacy": 1198,
+    "none": 299,
+    "labels": 8,
+    "subsets": {
+     "cocolofa_train": 1497
+    },
+    "sha256": "2624a8f5ae8fea2a"
+   },
+   "generated": {
+    "total": 5804,
+    "fallacy": 4928,
+    "none": 876,
+    "labels": 186,
+    "subsets": {
+     "train": 1221,
+     "train_extra": 977,
+     "train_none": 298,
+     "train_real": 3308
+    },
+    "sha256": "a607aebe0976e23d"
+   }
+  },
+  "calib": {
+   "cocolofa": {
+    "total": 180,
+    "fallacy": 120,
+    "none": 60,
+    "labels": 8,
+    "subsets": {
+     "cocolofa_calib": 165,
+     "cocolofa_tradition_calib": 15
+    },
+    "sha256": "f590fe0e738c2887"
+   },
+   "generated": {
+    "total": 351,
+    "fallacy": 249,
+    "none": 102,
+    "labels": 185,
+    "subsets": {
+     "calib_fallacy": 249,
+     "calib_none": 102
+    },
+    "sha256": "9073fb8dc50eac37"
+   }
+  },
+  "test": {
+   "cocolofa": {
+    "total": 180,
+    "fallacy": 120,
+    "none": 60,
+    "labels": 8,
+    "subsets": {
+     "cocolofa_test": 165,
+     "cocolofa_tradition_test": 15
+    },
+    "sha256": "984657714acb4e32"
+   },
+   "generated": {
+    "total": 513,
+    "fallacy": 387,
+    "none": 126,
+    "labels": 183,
+    "subsets": {
+     "eval": 135,
+     "eval_none": 75,
+     "eval_real": 303
+    },
+    "sha256": "e83905e87b02cc20"
+   },
+   "mafalda": {
+    "total": 196,
+    "fallacy": 133,
+    "none": 63,
+    "labels": 20,
+    "subsets": {
+     "mafalda_gold": 196
+    },
+    "sha256": "ff7e478668cdc2f7"
+   }
+  }
+ },
+ "dropped_from_train": {
+  "train: shares an 8-word run": 1,
+  "train_none: shares an 8-word run": 2,
+  "train_real: shares an 8-word run": 15,
+  "cocolofa_train: shares an 8-word run": 3
+ },
+ "leak_checks": {
+  "identical texts shared between splits": {
+   "train&calib": 0,
+   "train&test": 0,
+   "calib&test": 0
+  },
+  "CoCoLoFa articles shared between splits": {
+   "train&calib": 0,
+   "train&test": 0,
+   "calib&test": 0
+  }
+ }
+}
